@@ -1,0 +1,18 @@
+{
+  "name": "node-lighthouse",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "debug": "node --inspect-brk app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chrome-launcher": "^0.13.4",
+    "console-table-printer": "^2.9.0",
+    "lighthouse": "^7.5.0"
+  }
+}

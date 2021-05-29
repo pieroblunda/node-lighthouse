@@ -1,0 +1,69 @@
+// https://github.com/GoogleChrome/lighthouse/blob/HEAD/docs/readme.md#using-programmatically
+// https://leonardofaria.net/2020/11/30/the-undocumented-lighthouse-guide/
+
+import fs from 'fs';
+import url from 'url';
+import lighthouse from 'lighthouse';
+import chromeLauncher from 'chrome-launcher';
+import * as TablePrinter from 'console-table-printer';
+
+
+const table = new TablePrinter.Table();
+
+class Lighthouse {
+  constructor(sites){
+    if(!sites){
+      this.sites = fs.readFileSync('./input.txt', 'utf8').split('\n');
+    }
+  }
+  
+  run(){
+    this.runLighthouse(this.sites.pop());
+  }
+  
+  async runLighthouse (site) {
+    
+    let siteCode = this.urlToCode(site);
+    
+    console.log(`Analyzing ${siteCode}...`);
+    
+    const chrome = await chromeLauncher.launch({chromeFlags: ['--headless']});
+    const lighthouseOptions = {
+      logLevel: 'silent', // silent | error | info | verbose
+      output: 'html', // json | html | csv
+      onlyCategories: ['performance'],
+      port: chrome.port
+    };
+    const runnerResult = await lighthouse(site, lighthouseOptions);
+    
+    // `.report` is the HTML report as a string
+    const reportHtml = runnerResult.report;
+    fs.writeFileSync(`reports/${siteCode}.html`, reportHtml);
+    
+    table.addRow({
+      site: site,
+      score: runnerResult.lhr.categories.performance.score * 100,
+      cls_score: runnerResult.lhr.audits["cumulative-layout-shift"].score,
+      numericValue: runnerResult.lhr.audits["cumulative-layout-shift"].numericValue,
+      weight: runnerResult.lhr.categories.performance.auditRefs[5].weight
+    });
+    
+    if(this.sites.length){
+      this.runLighthouse(this.sites.pop());
+    }else{
+      table.printTable();
+    }
+    
+    await chrome.kill();
+    
+  }
+  
+  urlToCode(url){
+    const myURL = new URL(url);
+    return myURL.hostname;
+  }
+  
+}
+
+let LighthouseInstance = new Lighthouse();
+LighthouseInstance.run();
