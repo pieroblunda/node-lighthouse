@@ -12,8 +12,15 @@ const table = new TablePrinter.Table();
 
 class Lighthouse {
   constructor(sites){
-    if(!sites){
-      this.sites = fs.readFileSync('./input.txt', 'utf8').split('\n');
+    switch (typeof sites) {
+      case 'string':
+        this.sites = [sites];
+        break;
+      case 'object':
+        this.sites = sites;
+        break;
+      default:
+        this.sites = fs.readFileSync('./input.txt', 'utf8').split('\n');
     }
   }
   
@@ -65,5 +72,8 @@ class Lighthouse {
   
 }
 
-let LighthouseInstance = new Lighthouse();
+let LighthouseInstance = new Lighthouse([
+  'https://console-table.netlify.app/docs/doc-alignment/',
+  'https://developer.apple.com/safari/technology-preview/release-notes/'
+]);
 LighthouseInstance.run();
