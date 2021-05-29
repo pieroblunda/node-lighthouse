@@ -34,6 +34,7 @@ class Lighthouse {
       default:
         this.sites = fs.readFileSync('./input.txt', 'utf8').split('\n');
     }
+    this.output = [];
     
     // Run 
     this.runLighthouse(this.sites.pop());
@@ -65,15 +66,32 @@ class Lighthouse {
       numericValue: runnerResult.lhr.audits["cumulative-layout-shift"].numericValue,
       weight: runnerResult.lhr.categories.performance.auditRefs[5].weight
     });
+    this.output.push({
+      site: site,
+      reportFile: `${siteCode}.html`,
+      score: runnerResult.lhr.categories.performance.score * 100
+    });
     
     if(this.sites.length){
       this.runLighthouse(this.sites.pop());
     }else{
       table.printTable();
+      this.exportHtml();
     }
     
     await chrome.kill();
     
+  }
+  
+  static exportHtml(){
+    let htmlString = '';
+    this.output.forEach((item, i) => {
+      htmlString += `<tr><td><a href="${item.reportFile}">${item.site}</a></td><td>${item.score}</td></tr>`;
+    });
+    let htmlTemplate = fs.readFileSync('./template.html', 'utf8');
+    htmlTemplate = htmlTemplate.replace('@@code@@', htmlString);
+    fs.writeFileSync(`reports/index.html`, htmlTemplate);
+    console.log('See report at reports/index.html');
   }
   
   static urlToCode(url){
