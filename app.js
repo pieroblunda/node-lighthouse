@@ -8,7 +8,15 @@ import chromeLauncher from 'chrome-launcher';
 import * as TablePrinter from 'console-table-printer';
 
 
-const table = new TablePrinter.Table();
+const table = new TablePrinter.Table({
+  columns: [
+    { name: "site", alignment: "left" },
+    { name: "score", alignment: "right" },
+    { name: "cls_score", alignment: "right" },
+    { name: "numericValue", alignment: "right" },
+    { name: "weight", alignment: "right" },
+  ],
+});
 
 class Lighthouse {
   constructor(sites){
