@@ -21,7 +21,10 @@ const table = new TablePrinter.Table({
 
 class Lighthouse {
   
-  static run(sites){
+  static async run(sites){
+    
+    this.start = Date.now();
+    console.log('Start:'+ this.start);
     
     // Config
     switch (typeof sites) {
@@ -37,6 +40,7 @@ class Lighthouse {
     this.output = [];
     
     // Run 
+    this.chrome = await chromeLauncher.launch({chromeFlags: ['--headless']});
     this.runLighthouse(this.sites.pop());
   }
   
@@ -46,12 +50,11 @@ class Lighthouse {
     
     console.log(`Analyzing ${siteCode}...`);
     
-    const chrome = await chromeLauncher.launch({chromeFlags: ['--headless']});
     const lighthouseOptions = {
       logLevel: 'silent', // silent | error | info | verbose
       output: 'html', // json | html | csv
       onlyCategories: ['performance'],
-      port: chrome.port
+      port: this.chrome.port
     };
     const runnerResult = await lighthouse(site, lighthouseOptions);
     
@@ -77,10 +80,11 @@ class Lighthouse {
     }else{
       table.printTable();
       this.exportHtml();
+      await this.chrome.kill();
+      this.end = Date.now();
+      console.log('End: '+ this.end);
+      console.log('Time elapsed (seconds): ' + Math.ceil((this.end - this.start)/1000));
     }
-    
-    await chrome.kill();
-    
   }
   
   static exportHtml(){
@@ -101,7 +105,4 @@ class Lighthouse {
   
 }
 
-Lighthouse.run([
-  'https://console-table.netlify.app/docs/doc-alignment/',
-  'https://developer.apple.com/safari/technology-preview/release-notes/'
-]);
+Lighthouse.run();
