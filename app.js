@@ -1,5 +1,6 @@
 // https://github.com/GoogleChrome/lighthouse/blob/HEAD/docs/readme.md#using-programmatically
 // https://leonardofaria.net/2020/11/30/the-undocumented-lighthouse-guide/
+// https://github.com/GoogleChrome/lighthouse/blob/master/lighthouse-core/config/default-config.js
 
 import fs from 'fs';
 import url from 'url';
@@ -19,7 +20,10 @@ const table = new TablePrinter.Table({
 });
 
 class Lighthouse {
-  constructor(sites){
+  
+  static run(sites){
+    
+    // Config
     switch (typeof sites) {
       case 'string':
         this.sites = [sites];
@@ -30,13 +34,12 @@ class Lighthouse {
       default:
         this.sites = fs.readFileSync('./input.txt', 'utf8').split('\n');
     }
-  }
-  
-  run(){
+    
+    // Run 
     this.runLighthouse(this.sites.pop());
   }
   
-  async runLighthouse (site) {
+  static async runLighthouse (site) {
     
     let siteCode = this.urlToCode(site);
     
@@ -73,15 +76,14 @@ class Lighthouse {
     
   }
   
-  urlToCode(url){
+  static urlToCode(url){
     const myURL = new URL(url);
     return myURL.hostname;
   }
   
 }
 
-let LighthouseInstance = new Lighthouse([
+Lighthouse.run([
   'https://console-table.netlify.app/docs/doc-alignment/',
   'https://developer.apple.com/safari/technology-preview/release-notes/'
 ]);
-LighthouseInstance.run();
