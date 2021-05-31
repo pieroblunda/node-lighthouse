@@ -9,9 +9,56 @@ table {border-collapse:collapse;width:80%;margin:0 auto;}
  tbody tr:nth-child(odd){background-color:#eee;}
  tbody tr:nth-child(even){background-color:#fff;border-left: 1px solid #eee;border-right: 1px solid #eee;}
  td {padding:8px;}
+ .icon-medium::before {
+   content: "";
+   margin-right: 4px;
+   background: #FFA400;
+  width: calc( 12px * 0.88);
+  height: calc( 12px * 0.88);
+  display: inline-block;
+ }
+ .icon-medium,
+ .icon-fail
+  {
+   border-right: 1px solid #cecece;
+   padding-right: 8px;
+   margin-right: 8px;
+ }
+ .icon-fail::before {
+   content: "";
+   width: 0;
+   height: 0;
+   margin-right: 4px;
+   border-left: 6px solid transparent;
+   border-right: 6px solid transparent;
+   border-bottom: 12px solid #FF4E42;
+   display: inline-block;
+ }
+ .icon-pass::before{
+   content: "";
+   margin-right: 4px;
+   background-color: #0CCE6B;
+display: inline-block;
+width: 12px;
+height: 12px;
+border-radius: 50%;
+ }
+ .reference-container {
+   border: 1px solid #cecece;
+border-radius: 4px;
+padding: 16px;
+text-align: center;
+max-width: 60%;
+margin: 0 auto;
+ }
     </style>
   </head>
   <body>
+    <div class="reference-container">
+      <span class="icon-fail">0-59 Poor</span>
+      <span class="icon-medium">50-89 Needs Improvement</span>
+      <span class="icon-pass">90-100 Good</span>
+    </div>
     <table>
       <thead>
         <tr>

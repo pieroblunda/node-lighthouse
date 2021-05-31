@@ -10,6 +10,10 @@ import * as TablePrinter from 'console-table-printer';
 import Open from 'open';
 
 const table = new TablePrinter.Table({
+  /* @ToDo: [1] Add column FCP (First Contentful Paint) */
+  /* @ToDo: [1] Add column LCP (Largest Contentful Paint) */
+  /* @ToDo: [1] Add column TBT (Total Blocking Time) */
+  /* @ToDo: [1] Add column CLS (Cumulative Layout Shift) */
   columns: [
     { name: "site", alignment: "left" },
     { name: "score", alignment: "right" },
@@ -50,9 +54,11 @@ class Lighthouse {
     
     console.log(`Analyzing ${siteCode}...`);
     
+    /* @ToDo: [1] Read config fron inherind config file */
     const lighthouseOptions = {
       logLevel: 'silent', // silent | error | info | verbose
       output: 'html', // json | html | csv
+      /* @ToDo: [1] add options to choose mobile or desktop */
       onlyCategories: ['performance'],
       port: this.chrome.port
     };
