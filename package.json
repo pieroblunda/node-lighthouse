@@ -15,5 +15,8 @@
     "console-table-printer": "^2.9.0",
     "lighthouse": "^7.5.0",
     "open": "^6.4.0"
+  },
+  "devDependencies": {
+    "technical-debt-cli": "^2.2.0"
   }
 }
