@@ -9,6 +9,13 @@ table {border-collapse:collapse;width:80%;margin:0 auto;}
  tbody tr:nth-child(odd){background-color:#eee;}
  tbody tr:nth-child(even){background-color:#fff;border-left: 1px solid #eee;border-right: 1px solid #eee;}
  td {padding:8px;}
+ td:not(:first-child) {
+   text-align: center;
+ }
+ td:last-child span {font-size: 24px;}
+ td:last-child span.text-fail{color:#FF4E42;}
+ td:last-child span.text-medium{color:#FFA400;}
+ td:last-child span.text-pass{color:#0CCE6B;}
  .icon-medium::before {
    content: "";
    margin-right: 4px;
@@ -17,8 +24,8 @@ table {border-collapse:collapse;width:80%;margin:0 auto;}
   height: calc( 12px * 0.88);
   display: inline-block;
  }
- .icon-medium,
- .icon-fail
+ .reference-container .icon-medium,
+ .reference-container .icon-fail
   {
    border-right: 1px solid #cecece;
    padding-right: 8px;
@@ -56,7 +63,7 @@ margin: 0 auto;
   <body>
     <div class="reference-container">
       <span class="icon-fail">0-59 Poor</span>
-      <span class="icon-medium">50-89 Needs Improvement</span>
+      <span class="icon-medium">60-89 Needs Improvement</span>
       <span class="icon-pass">90-100 Good</span>
     </div>
     <a href="https://googlechrome.github.io/lighthouse/scorecalc/#FCP=3000&SI=5800&FMP=4000&TTI=7300&FCI=6500&LCP=4000&TBT=600&CLS=0.25&device=mobile&version=6">See calculator</a>

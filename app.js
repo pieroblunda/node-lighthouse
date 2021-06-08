@@ -73,12 +73,27 @@ class Lighthouse {
     
     let row = {
       site: site,
-      FCP: Math.round(reportJSON.audits['first-contentful-paint'].score * 100, 0),
-      SI: Math.round(reportJSON.audits['speed-index'].score * 100, 0),
-      LCP: Math.round(reportJSON.audits['largest-contentful-paint'].score * 100, 0),
-      TBT: Math.round(reportJSON.audits['total-blocking-time'].score * 100, 0),
-      CLS: Math.round(reportJSON.audits['cumulative-layout-shift'].score * 100, 0),
-      score: Math.round(runnerResult.lhr.categories.performance.score * 100, 0),
+      FCP: {
+        bulletHTML: this.getBulletHTML(Math.round(reportJSON.audits['first-contentful-paint'].score * 100, 0)),
+        score: Math.round(reportJSON.audits['first-contentful-paint'].score * 100, 0)
+      },
+      SI: {
+        bulletHTML: this.getBulletHTML(Math.round(reportJSON.audits['speed-index'].score * 100, 0)),
+        score: Math.round(reportJSON.audits['speed-index'].score * 100, 0)
+      },
+      LCP: {
+        bulletHTML: this.getBulletHTML(Math.round(reportJSON.audits['largest-contentful-paint'].score * 100, 0)),
+        score: Math.round(reportJSON.audits['largest-contentful-paint'].score * 100, 0)
+      },
+      TBT: {
+        bulletHTML: this.getBulletHTML(Math.round(reportJSON.audits['total-blocking-time'].score * 100, 0)),
+        score: Math.round(reportJSON.audits['total-blocking-time'].score * 100, 0)
+      },
+      CLS: {
+        bulletHTML: this.getBulletHTML(Math.round(reportJSON.audits['cumulative-layout-shift'].score * 100, 0)),
+        score: Math.round(reportJSON.audits['cumulative-layout-shift'].score * 100, 0)
+      },
+      score: this.getFormattedScore(Math.round(runnerResult.lhr.categories.performance.score * 100, 0)),
     };
     
     table.addRow(row);
@@ -104,11 +119,11 @@ class Lighthouse {
       htmlString += `
       <tr>
         <td><a href="${item.reportFile}">${item.site}</a></td>
-        <td>${item.FCP}</td>
-        <td>${item.SI}</td>
-        <td>${item.LCP}</td>
-        <td>${item.TBT}</td>
-        <td>${item.CLS}</td>
+        <td>${item.FCP.bulletHTML}</td>
+        <td>${item.SI.bulletHTML}</td>
+        <td>${item.LCP.bulletHTML}</td>
+        <td>${item.TBT.bulletHTML}</td>
+        <td>${item.CLS.bulletHTML}</td>
         <td>${item.score}</td>
       </tr>`;
     });
@@ -122,6 +137,40 @@ class Lighthouse {
   static urlToCode(url){
     const myURL = new URL(url);
     return myURL.hostname;
+  }
+  
+  static getBulletHTML(score){
+    switch (true) {
+      case (score <= 59):
+        return `<span class="icon-fail" title="${score}"></span>`;
+        break;
+      case (score > 59 && score <= 89):
+        return `<span class="icon-medium" title="${score}"></span>`;
+        break;
+      case (score > 89):
+        return `<span class="icon-pass" title="${score}"></span>`;
+        break;
+      default:
+        return '';
+        break;
+    }
+  }
+  
+  static getFormattedScore(score){
+    switch (true) {
+      case (score <= 59):
+        return `<span class="text-fail">${score}</span>`;
+        break;
+      case (score > 59 && score <= 89):
+        return `<span class="text-medium">${score}</span>`;
+        break;
+      case (score > 89):
+        return `<span class="text-pass">${score}</span>`;
+        break;
+      default:
+        return '';
+        break;
+    }
   }
   
 }
