@@ -16,10 +16,12 @@ const table = new TablePrinter.Table({
   /* @ToDo: [1] Add column CLS (Cumulative Layout Shift) */
   columns: [
     { name: "site", alignment: "left" },
-    { name: "score", alignment: "right" },
-    { name: "cls_score", alignment: "right" },
-    { name: "numericValue", alignment: "right" },
-    { name: "weight", alignment: "right" },
+    { name: "FCP", alignment: "right" },
+    { name: "SI", alignment: "right" },
+    { name: "CLS", alignment: "right" },
+    { name: "LCP", alignment: "right" },
+    { name: "TBT", alignment: "right" },
+    { name: "score", alignment: "right" }
   ],
 });
 
@@ -57,7 +59,7 @@ class Lighthouse {
     /* @ToDo: [1] Read config fron inherind config file */
     const lighthouseOptions = {
       logLevel: 'silent', // silent | error | info | verbose
-      output: 'html', // json | html | csv
+      output: ['html', 'json'], // json | html | csv
       /* @ToDo: [1] add options to choose mobile or desktop */
       onlyCategories: ['performance'],
       port: this.chrome.port
@@ -65,21 +67,24 @@ class Lighthouse {
     const runnerResult = await lighthouse(site, lighthouseOptions);
     
     // `.report` is the HTML report as a string
-    const reportHtml = runnerResult.report;
-    fs.writeFileSync(`reports/${siteCode}.html`, reportHtml);
+    fs.writeFileSync(`reports/${siteCode}.html`, runnerResult.report[0]);
     
-    table.addRow({
+    let reportJSON = JSON.parse(runnerResult.report[1]);
+    
+    let row = {
       site: site,
-      score: runnerResult.lhr.categories.performance.score * 100,
-      cls_score: runnerResult.lhr.audits["cumulative-layout-shift"].score,
-      numericValue: runnerResult.lhr.audits["cumulative-layout-shift"].numericValue,
-      weight: runnerResult.lhr.categories.performance.auditRefs[5].weight
-    });
-    this.output.push({
-      site: site,
-      reportFile: `${siteCode}.html`,
-      score: runnerResult.lhr.categories.performance.score * 100
-    });
+      FCP: Math.round(reportJSON.audits['first-contentful-paint'].score * 100, 0),
+      SI: Math.round(reportJSON.audits['speed-index'].score * 100, 0),
+      LCP: Math.round(reportJSON.audits['largest-contentful-paint'].score * 100, 0),
+      TBT: Math.round(reportJSON.audits['total-blocking-time'].score * 100, 0),
+      CLS: Math.round(reportJSON.audits['cumulative-layout-shift'].score * 100, 0),
+      score: Math.round(runnerResult.lhr.categories.performance.score * 100, 0),
+    };
+    
+    table.addRow(row);
+    
+    row.reportFile = `${siteCode}.html`;
+    this.output.push(row);
     
     if(this.sites.length){
       this.runLighthouse(this.sites.pop());
@@ -96,7 +101,16 @@ class Lighthouse {
   static exportHtml(){
     let htmlString = '';
     this.output.forEach((item, i) => {
-      htmlString += `<tr><td><a href="${item.reportFile}">${item.site}</a></td><td>${item.score}</td></tr>`;
+      htmlString += `
+      <tr>
+        <td><a href="${item.reportFile}">${item.site}</a></td>
+        <td>${item.FCP}</td>
+        <td>${item.SI}</td>
+        <td>${item.LCP}</td>
+        <td>${item.TBT}</td>
+        <td>${item.CLS}</td>
+        <td>${item.score}</td>
+      </tr>`;
     });
     let htmlTemplate = fs.readFileSync('./template.html', 'utf8');
     htmlTemplate = htmlTemplate.replace('@@code@@', htmlString);
