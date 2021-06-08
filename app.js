@@ -6,24 +6,7 @@ import fs from 'fs';
 import url from 'url';
 import lighthouse from 'lighthouse';
 import chromeLauncher from 'chrome-launcher';
-import * as TablePrinter from 'console-table-printer';
 import Open from 'open';
-
-const table = new TablePrinter.Table({
-  /* @ToDo: [1] Add column FCP (First Contentful Paint) */
-  /* @ToDo: [1] Add column LCP (Largest Contentful Paint) */
-  /* @ToDo: [1] Add column TBT (Total Blocking Time) */
-  /* @ToDo: [1] Add column CLS (Cumulative Layout Shift) */
-  columns: [
-    { name: "site", alignment: "left" },
-    { name: "FCP", alignment: "right" },
-    { name: "SI", alignment: "right" },
-    { name: "CLS", alignment: "right" },
-    { name: "LCP", alignment: "right" },
-    { name: "TBT", alignment: "right" },
-    { name: "score", alignment: "right" }
-  ],
-});
 
 class Lighthouse {
   
@@ -96,15 +79,12 @@ class Lighthouse {
       score: this.getFormattedScore(Math.round(runnerResult.lhr.categories.performance.score * 100, 0)),
     };
     
-    table.addRow(row);
-    
     row.reportFile = `${siteCode}.html`;
     this.output.push(row);
     
     if(this.sites.length){
       this.runLighthouse(this.sites.pop());
     }else{
-      table.printTable();
       this.exportHtml();
       await this.chrome.kill();
       this.end = Date.now();

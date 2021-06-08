@@ -12,7 +12,6 @@
   "license": "ISC",
   "dependencies": {
     "chrome-launcher": "^0.13.4",
-    "console-table-printer": "^2.9.0",
     "lighthouse": "^7.5.0",
     "open": "^6.4.0"
   },
