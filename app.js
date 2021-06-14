@@ -6,7 +6,6 @@ import fs from 'fs';
 import url from 'url';
 import lighthouse from 'lighthouse';
 import chromeLauncher from 'chrome-launcher';
-import Open from 'open';
 
 class Lighthouse {
   
@@ -111,7 +110,6 @@ class Lighthouse {
     htmlTemplate = htmlTemplate.replace('@@code@@', htmlString);
     fs.writeFileSync(`reports/index.html`, htmlTemplate);
     console.log('See report at reports/index.html');
-    Open('reports/index.html');
   }
   
   static urlToCode(url){

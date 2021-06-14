@@ -11,16 +11,15 @@ Lighthouse.run(sites);
 
 ```javascript
 // As string
-let sites = 'https://www.example.com';
+let sites = 'https://www.google.com';
 Lighthouse.run(sites);
 ```
 
 ```javascript
-// As arrayÂ
+// As array
 let sites = [
-  'https://www.example.com',
-  'https://www.foo.com',
-  'https://www.bar.com'
+  'https://github.com'
+  'https://www.google.com'
 ];
 Lighthouse.run(sites);
 ```
