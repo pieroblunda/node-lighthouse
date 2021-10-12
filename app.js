@@ -35,8 +35,9 @@ class Lighthouse {
   static async runLighthouse (site) {
     
     let siteCode = this.urlToCode(site);
+    let reportFile = site.replace('http://', '').replace('https://', '').replace('www.', '').replace(/\//g, '_');
     
-    console.log(`Analyzing ${siteCode}...`);
+    console.log(`Analyzing ${reportFile}...`);
     
     /* @ToDo: [1] Read config fron inherind config file */
     const lighthouseOptions = {
@@ -49,7 +50,7 @@ class Lighthouse {
     const runnerResult = await lighthouse(site, lighthouseOptions);
     
     // `.report` is the HTML report as a string
-    fs.writeFileSync(`reports/${siteCode}.html`, runnerResult.report[0]);
+    fs.writeFileSync(`reports/${reportFile}.html`, runnerResult.report[0]);
     
     let reportJSON = JSON.parse(runnerResult.report[1]);
     
@@ -78,7 +79,7 @@ class Lighthouse {
       score: this.getFormattedScore(Math.round(runnerResult.lhr.categories.performance.score * 100, 0)),
     };
     
-    row.reportFile = `${siteCode}.html`;
+    row.reportFile = `${reportFile}.html`;
     this.output.push(row);
     
     if(this.sites.length){
