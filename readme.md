@@ -4,19 +4,17 @@ Automating lighthouse reports
 
 ## Usage
 
-```javascript
-Lighthouse.run(sites);
 ```
-`sites` accepts to be an array, a string or null.
-
-```javascript
-// As string
-let sites = 'https://www.google.com';
-Lighthouse.run(sites);
+import Lighthouse from 'node-lighthouse';
 ```
 
 ```javascript
-// As array
+// Using string param
+Lighthouse.run('https://stackoverflow.com');;
+```
+
+```javascript
+// Using array param
 let sites = [
   'https://github.com'
   'https://www.google.com'
@@ -25,8 +23,8 @@ Lighthouse.run(sites);
 ```
 
 ```javascript
-// As null
+// Using input.txt file as param
+// When the input is null, it reads the file `input.txt`. You should to insert an URL on each line.
 Lighthouse.run();
 ```
-When the input is null, it reads the file `input.txt`. You should to insert an URL on each line.
 
